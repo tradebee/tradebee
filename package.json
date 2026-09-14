@@ -1,0 +1,62 @@
+{
+  "name": "openclaw-plugin-tradebee",
+  "version": "26.9.14",
+  "description": "A Tradebee Website Builder Open API plugin for content, navigation, products, analytics, file uploads, real website links, and page generation, preview, and persistence. Update actions read and locally back up the current record before mutation.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.check.json",
+    "plugin:build": "npm run build && openclaw plugins build --entry ./dist/index.js",
+    "plugin:validate": "npm run build && openclaw plugins validate --entry ./dist/index.js"
+  },
+  "keywords": [
+    "tradebee",
+    "products",
+    "blog",
+    "faq",
+    "custompage",
+    "news",
+    "navigation",
+    "inquiries",
+    "visitors",
+    "keywords",
+    "pages",
+    "links",
+    "uploads"
+  ],
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=24.16"
+  },
+  "files": [
+    "dist",
+    "openclaw.plugin.json",
+    "tool.schema.json",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "openclaw": ">=2026.5.17"
+  },
+  "dependencies": {
+    "typebox": "^1.1.38"
+  },
+  "devDependencies": {
+    "openclaw": "2026.8.2",
+    "typescript": "^5.9.0"
+  },
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ],
+    "compat": {
+      "pluginApi": ">=2026.5.17",
+      "minGatewayVersion": "2026.5.17"
+    },
+    "build": {
+      "openclawVersion": "2026.8.2",
+      "pluginSdkVersion": "2026.8.2"
+    }
+  }
+}

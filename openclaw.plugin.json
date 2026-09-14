@@ -1,0 +1,25 @@
+{
+  "id": "tradebee",
+  "name": "Tradebee OpenAPI",
+  "description": "Manage Tradebee Website Builder content, navigation, products, analytics, files, links, and generated pages.",
+  "version": "26.9.14",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "apiKey": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Tradebee API key. Falls back to BEE_API_KEY when omitted."
+      }
+    },
+    "additionalProperties": false
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "tradebee_api"
+    ]
+  }
+}
