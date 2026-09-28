@@ -1,5 +1,5 @@
 import type { ActionArguments } from "../action-types.js";
-import { requestFailure, callTradebeeApi, getApiKeyOrError, isPlainObject, validateLanguage, validatePageCss, validatePageLayouts, validatePageName } from "../validation.js";
+import { requestFailure, callTradebeeApi, getApiKeyOrError, isPlainObject, validateLanguage, validatePageCss, validatePageGuid, validatePageLayouts, validatePageName } from "../validation.js";
 
 export default async function PageHtml(args: ActionArguments<"page-html"> = {}) {
     if (!isPlainObject(args)) {
@@ -18,6 +18,9 @@ export default async function PageHtml(args: ActionArguments<"page-html"> = {}) 
     const pageNameError = validatePageName(args.pageName);
     if (pageNameError) return { status: false, msg: pageNameError };
 
+    const guidError = validatePageGuid(args.pageName, args.guid);
+    if (guidError) return { status: false, msg: guidError };
+
     const layoutsError = validatePageLayouts(args.layouts);
     if (layoutsError) return { status: false, msg: layoutsError };
 
@@ -32,8 +35,11 @@ export default async function PageHtml(args: ActionArguments<"page-html"> = {}) 
     if (args.css !== undefined) body.css = args.css;
 
     try {
+        const endpoint = args.guid == null
+            ? "https://platform.tradew.com/openapis/page/html"
+            : `https://platform.tradew.com/openapis/page/html?guid=${args.guid}`;
         return await callTradebeeApi(
-            "https://platform.tradew.com/openapis/page/html",
+            endpoint,
             API_KEY,
             body
         );

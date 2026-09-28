@@ -1,5 +1,5 @@
 import type { ActionArguments } from "../action-types.js";
-import { requestFailure, callTradebeeApi, cloneJson, getApiKeyOrError, isPlainObject, saveBackupToFile, validateLanguage, validatePageCss, validatePageLayouts, validatePageName } from "../validation.js";
+import { requestFailure, callTradebeeApi, cloneJson, getApiKeyOrError, isPlainObject, saveBackupToFile, validateLanguage, validatePageCss, validatePageGuid, validatePageLayouts, validatePageName } from "../validation.js";
 
 export default async function PageSave(args: ActionArguments<"page-save"> = {}) {
     if (!isPlainObject(args)) {
@@ -15,7 +15,7 @@ export default async function PageSave(args: ActionArguments<"page-save"> = {}) 
     if (!isPlainObject(args.confirmation) || args.confirmation.approved !== true) {
         return {
             status: false,
-            msg: "Explicit user confirmation is required before page-save. Show the exact language, pageName, layouts, and css payload first, then set confirmation.approved=true."
+            msg: "Explicit user confirmation is required before page-save. Show the exact language, pageName, required guid, layouts, and css payload first, then set confirmation.approved=true."
         };
     }
     if (typeof args.confirmation.summary !== "string" || !args.confirmation.summary.trim()) {
@@ -31,6 +31,9 @@ export default async function PageSave(args: ActionArguments<"page-save"> = {}) 
     const pageNameError = validatePageName(args.pageName);
     if (pageNameError) return { status: false, msg: pageNameError };
 
+    const guidError = validatePageGuid(args.pageName, args.guid);
+    if (guidError) return { status: false, msg: guidError };
+
     const layoutsError = validatePageLayouts(args.layouts, { required: true });
     if (layoutsError) return { status: false, msg: layoutsError };
 
@@ -42,11 +45,15 @@ export default async function PageSave(args: ActionArguments<"page-save"> = {}) 
         pageName: args.pageName,
         layouts: args.layouts
     };
+    if (args.guid !== undefined) body.guid = args.guid;
     if (args.css !== undefined) body.css = args.css;
 
     try {
+        const readEndpoint = args.guid == null
+            ? "https://platform.tradew.com/openapis/page/html"
+            : `https://platform.tradew.com/openapis/page/html?guid=${args.guid}`;
         const current = await callTradebeeApi(
-            "https://platform.tradew.com/openapis/page/html",
+            readEndpoint,
             API_KEY,
             {
                 language: body.language,
@@ -68,6 +75,7 @@ export default async function PageSave(args: ActionArguments<"page-save"> = {}) 
                 pageName: body.pageName,
                 layouts: cloneJson(current.data.layouts)
             };
+            if (args.guid !== undefined) restorePayload.guid = args.guid;
             if (isPlainObject(current.data.css)) restorePayload.css = cloneJson(current.data.css);
 
             const backupFile = await saveBackupToFile({

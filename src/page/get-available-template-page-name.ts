@@ -1,7 +1,7 @@
 import type { ActionArguments } from "../action-types.js";
 import { requestFailure, callTradebeeApi, getApiKeyOrError, isPlainObject, validateLanguage } from "../validation.js";
 
-export default async function PageList(args: ActionArguments<"page-list"> = {}) {
+export default async function PageGetAvailableTemplatePageName(args: ActionArguments<"page-get-available-template-page-name"> = {}) {
     if (!isPlainObject(args)) {
         return {
             status: false,
@@ -19,9 +19,9 @@ export default async function PageList(args: ActionArguments<"page-list"> = {}) 
 
     try {
         return await callTradebeeApi(
-            "https://platform.tradew.com/openapis/page/list",
+            "https://platform.tradew.com/openapis/page/getavailabletemplatepagename",
             API_KEY,
-            { language: args.language!.trim() } // validateLanguage above rejects missing/non-string values.
+            { language: args.language!.trim() }
         );
     } catch (error) {
         return requestFailure(error);

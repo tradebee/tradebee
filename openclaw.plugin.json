@@ -1,8 +1,8 @@
 {
   "id": "tradebee",
-  "name": "Tradebee OpenAPI",
-  "description": "Manage Tradebee Website Builder content, navigation, products, analytics, files, links, and generated pages.",
-  "version": "26.9.14",
+  "name": "Tradebee Plugin",
+  "description": "Manage Tradebee Website Builder content, navigation, products, analytics, files, links, system data IDs, and generated pages.",
+  "version": "26.9.28",
   "configSchema": {
     "type": "object",
     "properties": {
@@ -19,7 +19,7 @@
   },
   "contracts": {
     "tools": [
-      "tradebee_api"
+      "tradebee"
     ]
   }
 }

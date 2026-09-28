@@ -130,6 +130,37 @@ export function validatePageName(pageName: string | null | undefined): Validatio
     return null;
 }
 
+const PAGE_GUID_DATA_TYPES: Record<string, string> = {
+    ProductsDesc: "products",
+    ProductsList: "productsgroup",
+    ProductsEveryGroup: "productsgroup",
+    NewsDetail: "news",
+    NewsList: "newsgroup",
+    BlogDetail: "blog",
+    BlogList: "bloggroup",
+    FaqsDetail: "faq",
+    Faq: "faqgroup",
+    CaseDesc: "cases",
+    CaseList: "casesgroup",
+    ExhibitionDesc: "exhibition",
+    ExhibitionList: "exhibitiongroup",
+    CertificateDesc: "certificate",
+    Download: "downloadgroup"
+};
+
+export function validatePageGuid(pageName: string | null | undefined, guid: number | null | undefined): ValidationMessage {
+    const dataType = typeof pageName === "string" ? PAGE_GUID_DATA_TYPES[pageName] : undefined;
+    if (dataType && guid == null) {
+        return `Missing required parameter: guid. For pageName=${pageName}, call data-ids-list with the same language and type=${dataType}, then copy one exact data.list[].id value.`;
+    }
+
+    if (guid != null && (!Number.isInteger(guid) || guid <= 0)) {
+        return "Invalid parameter: guid. It must be one positive integer copied from data-ids-list data.list[].id for the same language and the data type required by pageName. Do not infer it from a name, URL, or example.";
+    }
+
+    return null;
+}
+
 export function validatePageLayouts(layouts: PageLayouts | null | undefined, { required = false }: RequiredOption = {}): ValidationMessage {
     if (layouts == null) {
         return required ? "Missing required parameter: layouts." : null;

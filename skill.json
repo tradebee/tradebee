@@ -1,10 +1,14 @@
 {
+  "name": "tradebee",
+  "description": "v26.9.28 A unified Tradebee Website Builder Open API skill for explicit content, navigation, product, analytics, file-upload, real website link retrieval, and page generation, preview, and persistence operations. Update actions automatically read and back up the current record before mutation.",
+  "version": "26.9.28",
   "input": {
     "type": "object",
     "properties": {
       "action": {
         "type": "string",
         "enum": [
+          "data-ids-list",
           "blog-create",
           "blog-delete",
           "blog-read",
@@ -43,6 +47,7 @@
           "newsgroup-read",
           "newsgroup-update",
           "page-generation-definition",
+          "page-get-available-template-page-name",
           "page-html",
           "page-list",
           "page-save",
@@ -57,7 +62,7 @@
           "rule-get",
           "visitor-recent"
         ],
-        "description": "Required. Selects which Tradebee OpenAPI capability to execute. Route only after the Tradebee data domain and object type are explicit. Page workflow: page-list selects an exact pageName; page-generation-definition returns its authoritative generation contract; links-list supplies real existing website URLs when the generated page needs links; file-upload stores JPG/PNG/GIF images needed by page HTML or CSS; page-html reads or previews without saving; page-save creates or updates only after final preview and explicit confirmation. Existing page overwrites are backed up locally. Other domains use their matching read, create, update, or delete actions. For rule-based HTML fragments, rule-get provides scene constraints; when links are needed, links-list provides real URLs under the same language instead of legacy link_resources. Every URL used from links-list must be a relative path without a protocol, hostname, domain, or //host prefix. Never prepend data.host or the website domain."
+        "description": "Required. Selects which Tradebee OpenAPI capability to execute. Route only after the Tradebee data domain and object type are explicit. Page workflow: page-list selects an exact existing pageName; when the user wants to create a template page, page-get-available-template-page-name returns the exact available template pageName; page-generation-definition returns its authoritative generation contract; data-ids-list supplies real existing record or group IDs required by module parameters; links-list supplies real existing website URLs when the generated page needs links; file-upload stores JPG/PNG/GIF images needed by page HTML or CSS; page-html reads or previews without saving; page-save creates or updates only after final preview and explicit confirmation. After any page content, layout, or CSS adjustment, call page-html with the latest layouts and css, render the returned pageHtml in a browser, and perform a final visual CSS review at desktop, tablet, and mobile widths. Check for layout misalignment, overlap, clipping, horizontal overflow, incorrect spacing, image display problems, unreadable text, responsive issues, and broken interaction states. If any issue is found, revise the CSS, render the latest preview, and review it again. Do not claim that the CSS review passed or call page-save until the latest candidate has passed an actual rendered-page review; static CSS inspection alone is insufficient. Existing page overwrites are backed up locally. When generating a page, consume all page-generation-definition rules, including pageLayoutRules.entranceAnimationRules and pageCssRules. A page-load, viewport-entry, or carousel-activation entrance effect must select an exact animations key through HTML data-animated instead of inventing another entrance implementation. CSS animation capabilities remain available for hover, focus, active, system-state, and non-entrance decorative effects. Other domains use their matching read, create, update, or delete actions. For rule-based HTML fragments, rule-get provides scene constraints; when links are needed, links-list provides real URLs under the same language instead of legacy link_resources. IDs used in generated module parameters must be copied from data-ids-list data.list[].id and never inferred. Every URL used from links-list must be a relative path without a protocol, hostname, domain, or //host prefix. Never prepend data.host or the website domain."
       },
       "uploads": {
         "type": "array",
@@ -67,30 +72,38 @@
         "items": {
           "type": "object",
           "properties": {
-            "name": { "type": "string", "maxLength": 100 },
+            "name": {
+              "type": "string",
+              "maxLength": 100
+            },
             "base64": { "type": "string" }
           },
-          "required": ["name", "base64"]
+          "required": [ "name", "base64" ]
         }
       },
       "pageName": {
         "type": "string",
-        "description": "Required by page-generation-definition, page-html, and page-save. Use one exact pageName returned by page-list."
+        "description": "Required by page-generation-definition, page-html, and page-save. For an existing page, use one exact pageName returned by page-list. To create a template page, use the exact available pageName returned by page-get-available-template-page-name."
+      },
+      "guid": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "Required by page-html and page-save when pageName selects a concrete record or group: ProductsDesc uses data-ids-list type=products; ProductsList and ProductsEveryGroup use productsgroup; NewsDetail/NewsList use news/newsgroup; BlogDetail/BlogList use blog/bloggroup; FaqsDetail/Faq use faq/faqgroup; CaseDesc/CaseList use cases/casesgroup; ExhibitionDesc/ExhibitionList use exhibition/exhibitiongroup; CertificateDesc uses certificate; Download uses downloadgroup. Call data-ids-list with the same exact language and required type, then copy one exact data.list[].id. Do not infer an ID from a name, URL, or example. A concrete group ID is required; guid=0 or an all-groups selection is not allowed for these previews."
       },
       "layouts": {
         "type": "array",
-        "description": "Optional for page-html and required for page-save. Must satisfy the current outputSchema returned by page-generation-definition for the same pageName."
+        "description": "Optional for page-html and required for page-save. Must satisfy the current outputSchema and every rule returned by page-generation-definition for the same pageName. For page-load, viewport-entry, or carousel-activation entrance animation, select one exact key from pageLayoutRules.entranceAnimationRules.animations and place it in the target HTML element's data-animated attribute. Do not add CSS, scripts, classes, or libraries to reimplement that selected entrance animation."
       },
       "css": {
         "type": "object",
-        "description": "Optional for page-html and page-save. Keys are 0 or numeric module IDs and values are CSS strings. Upload new images with file-upload and use returned URLs before preview or save."
+        "description": "Optional for page-html and page-save. Keys are 0 or numeric module IDs and values are CSS strings. Upload new images with file-upload and use returned URLs before preview or save. CSS must follow pageCssRules. Page-load, viewport-entry, and carousel-activation entrance animations are configured only by selecting an exact pageLayoutRules.entranceAnimationRules.animations key for HTML data-animated and are not reimplemented in page CSS. This does not prohibit @keyframes, animation, transition, transform, or opacity for hover, focus, active, system-state, and non-entrance decorative effects."
       },
       "type": {
         "type": "string",
         "enum": [
           "main",
           "products",
-          "membergroup",
+          "productsgroup",
           "news",
           "newsgroup",
           "blog",
@@ -103,6 +116,9 @@
           "exhibitiongroup",
           "mybar",
           "certificate",
+          "download",
+          "downloadgroup",
+          "contact",
           "pdf",
           "doc",
           "docx",
@@ -111,7 +127,7 @@
           "rar",
           "zip"
         ],
-        "description": "Optional link category used by links-list; defaults to main. Use an exact value returned by links-list data.group. Every selected data.list[].url must be a relative path without a protocol, hostname, domain, or //host prefix. Never prepend data.host or the website domain. If a returned URL contains a domain, do not use or rewrite it; report the invalid result."
+        "description": "Category used by links-list or data-ids-list. For data-ids-list it is required and must be one of products, productsgroup, news, newsgroup, blog, bloggroup, faq, faqgroup, cases, casesgroup, exhibition, exhibitiongroup, certificate, download, downloadgroup, or contact; copy only returned data.list[].id values into module parameters. For links-list it defaults to main; use productsgroup for product-group links and otherwise use an exact value returned in data.group. Every selected data.list[].url must remain a relative path without a protocol, hostname, domain, or //host prefix. Never prepend data.host or the website domain."
       },
       "blog": {
         "type": "object",
@@ -427,15 +443,26 @@
             "type": "object",
             "description": "Optional image up to 500 kB; an updated image cannot be automatically restored from backup.",
             "properties": {
-              "name": { "type": "string", "description": "Required image file label when cover_image is supplied." },
-              "base64": { "type": "string", "description": "Required image data with MIME prefix when cover_image is supplied; decoded size must not exceed 500 kB." }
+              "name": {
+                "type": "string",
+                "description": "Required image file label when cover_image is supplied."
+              },
+              "base64": {
+                "type": "string",
+                "description": "Required image data with MIME prefix when cover_image is supplied; decoded size must not exceed 500 kB."
+              }
             }
           },
           "tags": {
             "type": "array",
             "minItems": 1,
             "maxItems": 6,
-            "items": { "type": "string", "minLength": 3, "maxLength": 50, "description": "News tag containing 3-50 characters." },
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 50,
+              "description": "News tag containing 3-50 characters."
+            },
             "description": "Required for create: 1-6 tags. For update, omit it to keep current tags."
           },
           "summary": {
@@ -452,9 +479,21 @@
             "type": "object",
             "description": "Optional SEO fields. For update, omit the object or individual fields to keep current values.",
             "properties": {
-              "title": { "type": "string", "maxLength": 90, "description": "SEO title, up to 90 characters." },
-              "description": { "type": "string", "maxLength": 200, "description": "SEO description, up to 200 characters." },
-              "keywords": { "type": "string", "maxLength": 120, "description": "Comma-separated SEO keywords, up to 6 keywords and 120 total characters." }
+              "title": {
+                "type": "string",
+                "maxLength": 90,
+                "description": "SEO title, up to 90 characters."
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "SEO description, up to 200 characters."
+              },
+              "keywords": {
+                "type": "string",
+                "maxLength": 120,
+                "description": "Comma-separated SEO keywords, up to 6 keywords and 120 total characters."
+              }
             }
           }
         }
@@ -483,7 +522,12 @@
             "type": "array",
             "minItems": 1,
             "maxItems": 6,
-            "items": { "type": "string", "minLength": 1, "maxLength": 50, "description": "News-group tag containing 1-50 characters." },
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "description": "News-group tag containing 1-50 characters."
+            },
             "description": "Required for create: 1-6 tags. For update, omit it to keep current tags."
           },
           "brief_description": {
@@ -495,9 +539,21 @@
             "type": "object",
             "description": "Optional SEO fields. For update, omit the object or individual fields to keep current values.",
             "properties": {
-              "title": { "type": "string", "maxLength": 90, "description": "SEO title, up to 90 characters." },
-              "description": { "type": "string", "maxLength": 200, "description": "SEO description, up to 200 characters." },
-              "keywords": { "type": "string", "maxLength": 120, "description": "Comma-separated SEO keywords, up to 6 keywords and 120 total characters." }
+              "title": {
+                "type": "string",
+                "maxLength": 90,
+                "description": "SEO title, up to 90 characters."
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "SEO description, up to 200 characters."
+              },
+              "keywords": {
+                "type": "string",
+                "maxLength": 120,
+                "description": "Comma-separated SEO keywords, up to 6 keywords and 120 total characters."
+              }
             }
           }
         }
@@ -611,7 +667,7 @@
       },
       "language": {
         "type": "string",
-        "description": "Required for most content operations and for `rule-get`. This is the exact site language code to operate on, such as `en` or `fr`. Do not guess, translate, or invent this value. First call `languages-get`, show the returned language list to the user, and copy one exact `language` value from that list after the user confirms it. When generating any HTML fragment such as `navigation.content`, `news.description`, `blog.description`, `faq.answer`, `products.description`, `productsgroup.section.top`, `productsgroup.section.bottom`, or `custompage.content`, call `rule-get` first with the exact same selected `language` and the exact matching `scene` value. Do not normalize or replace the selected `language` value when calling `rule-get`."
+        "description": "Required for most content operations, `rule-get`, `page-list`, `page-get-available-template-page-name`, and `page-generation-definition`. This is the exact site language code to operate on, such as `en` or `fr`. Do not guess, translate, or invent this value. First call `languages-get`, show the returned language list to the user, and copy one exact `language` value from that list after the user confirms it. When generating any HTML fragment such as `navigation.content`, `news.description`, `blog.description`, `faq.answer`, `products.description`, `productsgroup.section.top`, `productsgroup.section.bottom`, or `custompage.content`, call `rule-get` first with the exact same selected `language` and the exact matching `scene` value. Do not normalize or replace the selected `language` value when calling `rule-get`."
       },
       "pagination": {
         "type": "object",
@@ -859,7 +915,7 @@
       },
       "backup": {
         "type": "object",
-        "description": "Returned by update actions and by page-save when an existing member page is overwritten. It includes local backup storage metadata, the pre-change API response and snapshot, a restore payload, and any restore limitations."
+        "description": "Returned by update actions and by page-save when an existing member page is overwritten. It includes local backup storage metadata, the pre-change API response and snapshot, a restore payload, and any restore limitations. Read backup.captured to determine whether a backup was captured. The local backup file path is backup.storage.file_path; do not use backup.storage.path or backup.storage.file. Backups are captured before submitting the update, so a backup may exist even when the update fails. Determine update success from the top-level status, not from backup presence or backup.captured, and report the update result and backup file path separately."
       }
     },
     "required": [

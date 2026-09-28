@@ -1,7 +1,7 @@
 {
-  "name": "openclaw-plugin-tradebee",
-  "version": "26.9.14",
-  "description": "A Tradebee Website Builder Open API plugin for content, navigation, products, analytics, file uploads, real website links, and page generation, preview, and persistence. Update actions read and locally back up the current record before mutation.",
+  "name": "tradebee",
+  "version": "26.9.28",
+  "description": "A Tradebee Website Builder Open API plugin for content, navigation, products, analytics, file uploads, real website links, system data IDs, and page generation, preview, and persistence. Update actions read and locally back up the current record before mutation.",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -24,6 +24,7 @@
     "keywords",
     "pages",
     "links",
+    "ids",
     "uploads"
   ],
   "main": "dist/index.js",
@@ -33,7 +34,7 @@
   "files": [
     "dist",
     "openclaw.plugin.json",
-    "tool.schema.json",
+    "skill.json",
     "README.md"
   ],
   "peerDependencies": {

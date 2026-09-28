@@ -6,6 +6,7 @@ import customPageCreate from "./custompage/create.js";
 import customPageDelete from "./custompage/delete.js";
 import customPageRead from "./custompage/read.js";
 import customPageUpdate from "./custompage/update.js";
+import dataIdsList from "./dataids/list.js";
 import blogGroupCreate from "./bloggroup/create.js";
 import blogGroupDelete from "./bloggroup/delete.js";
 import blogGroupRead from "./bloggroup/read.js";
@@ -36,6 +37,7 @@ import newsGroupDelete from "./newsgroup/delete.js";
 import newsGroupRead from "./newsgroup/read.js";
 import newsGroupUpdate from "./newsgroup/update.js";
 import pageGenerationDefinition from "./page/generation-definition.js";
+import pageGetAvailableTemplatePageName from "./page/get-available-template-page-name.js";
 import pageHtml from "./page/html.js";
 import pageList from "./page/list.js";
 import pageSave from "./page/save.js";
@@ -50,10 +52,12 @@ import productsGroupUpdate from "./productsgroup/update.js";
 import ruleGet from "./rule/get.js";
 import visitorRecent from "./visitor/recent.js";
 import { isPlainObject } from "./validation.js";
+import type { ActionArguments } from "./action-types.js";
 import type { TradebeeRequest } from "./types.js";
 import type { RequestArguments as TradebeeArguments } from "./request-types.js";
 
 const READ_ACTIONS = new Set([
+    "data-ids-list",
     "blog-read",
     "bloggroup-read",
     "custompage-read",
@@ -67,6 +71,7 @@ const READ_ACTIONS = new Set([
     "news-read",
     "newsgroup-read",
     "page-generation-definition",
+    "page-get-available-template-page-name",
     "page-html",
     "page-list",
     "products-read",
@@ -116,6 +121,17 @@ interface ActionDefinition {
 }
 
 const ACTIONS: Record<string, ActionDefinition> = {
+    "data-ids-list": {
+        handler: (args) => dataIdsList(args as unknown as ActionArguments<"data-ids-list">),
+        buildArgs(args: TradebeeArguments) {
+            return {
+                language: args.language,
+                type: args.type,
+                current_page: args.pagination?.current_page,
+                page_size: args.pagination?.page_size
+            };
+        }
+    },
     "file-upload": {
         handler: fileUpload,
         buildArgs(args: TradebeeArguments) {
@@ -368,7 +384,7 @@ const ACTIONS: Record<string, ActionDefinition> = {
         }
     },
     "links-list": {
-        handler: linksList,
+        handler: (args) => linksList(args as unknown as ActionArguments<"links-list">),
         buildArgs(args: TradebeeArguments) {
             return {
                 language: args.language,
@@ -518,7 +534,16 @@ const ACTIONS: Record<string, ActionDefinition> = {
         handler: pageGenerationDefinition,
         buildArgs(args: TradebeeArguments) {
             return {
+                language: args.language,
                 pageName: args.pageName
+            };
+        }
+    },
+    "page-get-available-template-page-name": {
+        handler: pageGetAvailableTemplatePageName,
+        buildArgs(args: TradebeeArguments) {
+            return {
+                language: args.language
             };
         }
     },
@@ -528,6 +553,7 @@ const ACTIONS: Record<string, ActionDefinition> = {
             return {
                 language: args.language,
                 pageName: args.pageName,
+                guid: args.guid,
                 layouts: args.layouts,
                 css: args.css
             };
@@ -535,8 +561,10 @@ const ACTIONS: Record<string, ActionDefinition> = {
     },
     "page-list": {
         handler: pageList,
-        buildArgs() {
-            return {};
+        buildArgs(args: TradebeeArguments) {
+            return {
+                language: args.language
+            };
         }
     },
     "page-save": {
@@ -545,6 +573,7 @@ const ACTIONS: Record<string, ActionDefinition> = {
             return {
                 language: args.language,
                 pageName: args.pageName,
+                guid: args.guid,
                 layouts: args.layouts,
                 css: args.css,
                 confirmation: args.confirmation

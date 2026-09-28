@@ -1,13 +1,13 @@
-# Tradebee OpenAPI Plugin
+# Tradebee Plugin
 
-This repository contains the `tradebee` OpenClaw plugin for the Tradebee Website Builder Open API. It registers one `tradebee_api` tool whose action handlers are grouped into internal business-domain directories under `src/`.
+This repository contains the `tradebee` OpenClaw plugin for the Tradebee Website Builder Open API. It registers one `tradebee` tool whose action handlers are grouped into internal business-domain directories under `src/`.
 
-Users invoke only `tradebee_api`. Files below the business-domain directories are TypeScript source modules, not independently published plugins or tools. `npm run build` emits the executable ESM JavaScript into `dist/`.
+Users invoke only `tradebee`. Files below the business-domain directories are TypeScript source modules, not independently published plugins or tools. `npm run build` emits the executable ESM JavaScript into `dist/`.
 
 ## Plugin Entry Policy
 
-- `tradebee_api` is the plugin's only external tool entrypoint for Tradebee capabilities.
-- Any newly added capability must be wired into [src/tradebee.ts](./src/tradebee.ts) and [tool.schema.json](./tool.schema.json), then documented here.
+- `tradebee` is the plugin's only external tool entrypoint for Tradebee capabilities.
+- Any newly added capability must be wired into [src/tradebee.ts](./src/tradebee.ts) and [skill.json](./skill.json), then documented here.
 - New action modules may be added under the matching business-domain directory in `src/`, but they are not separate plugins, tools, or publish targets.
 - Action naming inside `tradebee` should continue using the existing hyphenated pattern such as `products-read` and `visitor-recent`.
 
@@ -19,6 +19,7 @@ sources use the same paths under `src/` with a `.ts` extension.
 | Capability | Built runtime module | Purpose |
 |------------|-----------------|---------|
 | `languages-get` | `languages/get.js` | Get enabled site languages |
+| `data-ids-list` | `dataids/list.js` | Get real product, content, and group IDs for generated module parameters |
 | `links-list` | `links/list.js` | Get real website links for rule-based HTML fragments, pages, and navigation |
 | `rule-get` | `rule/get.js` | Read tenant HTML generation rules for one language and one scene |
 | `blog-create` | `blog/create.js` | Create and publish a blog |
@@ -66,16 +67,17 @@ sources use the same paths under `src/` with a `.ts` extension.
 | `keywords-rank` | `keywords/rank.js` | Read keyword ranking analytics |
 | `file-upload` | `file/upload.js` | Upload page/content images and return hosted URLs plus file metadata |
 | `page-list` | `page/list.js` | List exact available page names |
-| `page-generation-definition` | `page/generation-definition.js` | Read page layouts, modules, schemas, and generation rules |
+| `page-get-available-template-page-name` | `page/get-available-template-page-name.js` | Get the exact available template page name before creating a template page |
+| `page-generation-definition` | `page/generation-definition.js` | Read authoritative page layouts, modules, schemas, CSS rules, and predefined entrance-animation choices |
 | `page-html` | `page/html.js` | Read or render a page as complete preview HTML without saving |
 | `page-save` | `page/save.js` | Create or update a page with pre-overwrite backup |
 
 ## Repository Principles
 
-- Publish and use `tradebee` as one OpenClaw plugin that exposes `tradebee_api`.
+- Publish and use `tradebee` as one OpenClaw plugin that exposes `tradebee`.
 - Keep one directory per business domain under `src/` and one TypeScript module per action.
 - Keep plugin metadata and the tool schema at the root; internal action modules must not contain separate plugin manifests or schemas.
-- Keep `src/tradebee.ts`, root `tool.schema.json`, and this README aligned with every supported action.
+- Keep `src/tradebee.ts`, root `skill.json`, and this README aligned with every supported action.
 - Keep request validation lightweight in `src/tradebee.ts` and let the server perform detailed business validation when possible.
 - Use shared dependency patterns across capabilities, especially language selection and product group selection.
 
@@ -83,7 +85,7 @@ sources use the same paths under `src/` with a `.ts` extension.
 
 For TypeScript source integrations, import the default function from `src/tradebee.ts`.
 Direct consumers of the built implementation import `dist/tradebee.js`. OpenClaw
-loads the registered `tradebee_api` tool from `dist/index.js` automatically.
+loads the registered `tradebee` tool from `dist/index.js` automatically.
 Typed callers use the default export with `TradebeeRequest`, a discriminated
 union of all 51 actions defined in `action-types.ts`. The 33 original action
 contracts were adapted from the legacy `tradebee-mu-skill` package; later capabilities
@@ -102,7 +104,7 @@ page-specific layout entries whose schema is returned by the server.
 
 Run `npm run typecheck` to check the TypeScript source.
 All 51 existing action names stay unchanged. Their runtime input and output
-contracts are defined in `tool.schema.json` and registered by the plugin entrypoint.
+contracts are defined in `skill.json` and registered by the plugin entrypoint.
 Requests time out after 30 seconds and are not automatically retried.
 For an uncertain write outcome, read the current record before retrying.
 
@@ -264,10 +266,12 @@ The caller should:
 ### Page Generation Operations
 
 1. Use `languages-get` to select the exact site language.
-2. Use `page-list` to select the exact page name.
-3. Use `page-generation-definition` before constructing layouts.
-4. When the page needs existing destinations, use `links-list` and copy the selected relative URLs exactly. They must not contain a protocol, hostname, or domain, and `data.host` must not be prepended.
-5. Upload required images with `file-upload`, preview with `page-html`, and use `page-save` only after approval.
+2. Use `page-list` with the selected exact language to select an existing page name. When the user wants to create a template page, use `page-get-available-template-page-name` with the same language and copy the returned exact `pageName`.
+3. Use `page-generation-definition` with the selected exact language before constructing layouts.
+4. Consume the complete returned `pageLayoutRules` (including its nested `entranceAnimationRules`) and `pageCssRules`. For page-load, viewport-entry, or carousel-activation entrance animation, choose one exact key from `pageLayoutRules.entranceAnimationRules.animations` and set `data-animated="<exact-key>"` on the target HTML element instead of inventing another entrance implementation. This does not prohibit CSS `@keyframes`, `animation`, `transition`, `transform`, or `opacity` for hover, focus, active, system-state, and non-entrance decorative effects.
+5. When a selected module parameter needs product, group, news, blog, FAQ, case, exhibition, certificate, download, download-group, or contact IDs, use `data-ids-list` with the exact page language and the type specified by the module definition. Copy only matching `data.list[].id` values and follow pagination when necessary.
+6. When the page needs existing destinations, use `links-list` and copy the selected relative URLs exactly. They must not contain a protocol, hostname, or domain, and `data.host` must not be prepended.
+7. Upload required images with `file-upload`, preview with `page-html`, and use `page-save` only after approval. For record and concrete-group pages, pass `guid` to both actions. Obtain it from `data-ids-list` under the same exact language and copy `data.list[].id`: `ProductsDesc` uses `products`; `ProductsList` and `ProductsEveryGroup` use `productsgroup`; `NewsDetail`/`NewsList` use `news`/`newsgroup`; `BlogDetail`/`BlogList` use `blog`/`bloggroup`; `FaqsDetail`/`Faq` use `faq`/`faqgroup`; `CaseDesc`/`CaseList` use `cases`/`casesgroup`; `ExhibitionDesc`/`ExhibitionList` use `exhibition`/`exhibitiongroup`; `CertificateDesc` uses `certificate`; and `Download` uses `downloadgroup`. Never infer the ID from a name, URL, or example, and do not use `guid=0` for an all-groups preview.
 
 ## Directory Layout
 
@@ -314,7 +318,7 @@ tradebee/
   package-lock.json
   package.json
   openclaw.plugin.json
-  tool.schema.json
+  skill.json
   tsconfig.check.json
   tsconfig.json
 ```
@@ -343,11 +347,11 @@ npm pack --pack-destination .\release
 
 This directory is one publishable OpenClaw plugin: `tradebee`.
 
-- User experience: one `tradebee_api` tool with multiple actions.
+- User experience: one `tradebee` tool with multiple actions.
 - Maintenance model: add action modules under their business domain, then expose them through the root `tradebee` router and schema.
 - Recommended naming pattern:
   - plugin ID: `tradebee`
-  - tool name: `tradebee_api`
+  - tool name: `tradebee`
   - action names: keep the existing hyphenated naming
 
 ## Notes
@@ -370,6 +374,7 @@ This directory is one publishable OpenClaw plugin: `tradebee`.
 - `products-update` and `products-create` share similar request structures, but `update` requires `products_id`.
 - `rule-get` is the required source of truth before generating any supported HTML fragment and should not be skipped or replaced with assumptions.
 - `languages-get` should be used first when a downstream action depends on the exact site language.
+- `data-ids-list` is the source of truth for IDs used by generated module parameters. Supported types are `products`, `productsgroup`, `news`, `newsgroup`, `blog`, `bloggroup`, `faq`, `faqgroup`, `cases`, `casesgroup`, `exhibition`, `exhibitiongroup`, `certificate`, `download`, `downloadgroup`, and `contact`; never infer an ID from a name or URL.
 - `links-list` should be used whenever a rule-get HTML fragment or generated page content needs an existing Tradebee destination. Use only relative `data.list[].url` values without a protocol, hostname, domain, or `//host` prefix; never prepend `data.host` or invent a link.
 - When adding a new capability later, update the root action enum, root routing logic, and root documentation in the same change.
 

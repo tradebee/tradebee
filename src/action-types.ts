@@ -1,6 +1,10 @@
 import type { ImageUpload, PageCss, PageLayouts, SeoMetadata } from "./types.js";
 
 export interface ActionInputs {
+    "data-ids-list": {
+        language: string;
+        type: "products" | "productsgroup" | "news" | "newsgroup" | "blog" | "bloggroup" | "faq" | "faqgroup" | "cases" | "casesgroup" | "exhibition" | "exhibitiongroup" | "certificate" | "download" | "downloadgroup" | "contact";
+    };
     "file-upload": {
         language: string;
         uploads: Array<{
@@ -303,7 +307,7 @@ export interface ActionInputs {
     "languages-get": {};
     "links-list": {
         language: string;
-        type?: "main" | "products" | "membergroup" | "news" | "newsgroup" | "blog" | "bloggroup" | "faq" | "faqgroup" | "cases" | "casesgroup" | "exhibition" | "exhibitiongroup" | "mybar" | "certificate" | "pdf" | "doc" | "docx" | "xls" | "xlsx" | "rar" | "zip";
+        type?: "main" | "products" | "productsgroup" | "news" | "newsgroup" | "blog" | "bloggroup" | "faq" | "faqgroup" | "cases" | "casesgroup" | "exhibition" | "exhibitiongroup" | "mybar" | "certificate" | "pdf" | "doc" | "docx" | "xls" | "xlsx" | "rar" | "zip";
     };
     "navigation-create": {
         language: string;
@@ -499,18 +503,26 @@ export interface ActionInputs {
         };
     };
     "page-generation-definition": {
+        language: string;
         pageName: string;
+    };
+    "page-get-available-template-page-name": {
+        language: string;
     };
     "page-html": {
         language: string;
         pageName: string;
+        guid?: number;
         layouts?: PageLayouts;
         css?: PageCss;
     };
-    "page-list": {};
+    "page-list": {
+        language: string;
+    };
     "page-save": {
         language: string;
         pageName: string;
+        guid?: number;
         layouts: PageLayouts;
         css?: PageCss;
         confirmation: {

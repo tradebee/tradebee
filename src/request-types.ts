@@ -8,9 +8,10 @@ export interface RequestArguments {
         base64?: string;
     }>;
     pageName?: string;
+    guid?: number;
     layouts?: PageLayouts;
     css?: PageCss;
-    type?: "main" | "products" | "membergroup" | "news" | "newsgroup" | "blog" | "bloggroup" | "faq" | "faqgroup" | "cases" | "casesgroup" | "exhibition" | "exhibitiongroup" | "mybar" | "certificate" | "pdf" | "doc" | "docx" | "xls" | "xlsx" | "rar" | "zip";
+    type?: "main" | "products" | "productsgroup" | "news" | "newsgroup" | "blog" | "bloggroup" | "faq" | "faqgroup" | "cases" | "casesgroup" | "exhibition" | "exhibitiongroup" | "mybar" | "certificate" | "download" | "downloadgroup" | "contact" | "pdf" | "doc" | "docx" | "xls" | "xlsx" | "rar" | "zip";
     blog?: {
         blog_id?: number;
         bloggroup_id?: number;

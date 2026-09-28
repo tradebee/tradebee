@@ -1,5 +1,6 @@
 import type { ActionArguments } from "../action-types.js";
-import { requestFailure,
+import {
+    requestFailure,
     callTradebeeApi,
     getApiKeyOrError,
     isPlainObject,
@@ -7,8 +8,7 @@ import { requestFailure,
     validatePagination
 } from "../validation.js";
 
-const LINK_TYPES = new Set([
-    "main",
+const DATA_ID_TYPES = new Set([
     "products",
     "productsgroup",
     "news",
@@ -21,18 +21,13 @@ const LINK_TYPES = new Set([
     "casesgroup",
     "exhibition",
     "exhibitiongroup",
-    "mybar",
     "certificate",
-    "pdf",
-    "doc",
-    "docx",
-    "xls",
-    "xlsx",
-    "rar",
-    "zip"
+    "download",
+    "downloadgroup",
+    "contact"
 ]);
 
-export default async function LinksList(args: ActionArguments<"links-list"> = {}) {
+export default async function DataIdsList(args: ActionArguments<"data-ids-list"> = {}) {
     if (!isPlainObject(args)) {
         return {
             status: false,
@@ -46,11 +41,11 @@ export default async function LinksList(args: ActionArguments<"links-list"> = {}
     const languageError = validateLanguage(args.language);
     if (languageError) return { status: false, msg: languageError };
 
-    const type = args.type ?? "main";
-    if (typeof type !== "string" || !LINK_TYPES.has(type)) {
+    const type = args.type;
+    if (typeof type !== "string" || !DATA_ID_TYPES.has(type)) {
         return {
             status: false,
-            msg: `Invalid parameter: type. Supported values: ${[...LINK_TYPES].join(", ")}.`
+            msg: `Invalid parameter: type. Supported values: ${[...DATA_ID_TYPES].join(", ")}.`
         };
     }
 
@@ -61,10 +56,10 @@ export default async function LinksList(args: ActionArguments<"links-list"> = {}
 
     try {
         return await callTradebeeApi(
-            "https://platform.tradew.com/openapis/links",
+            "https://platform.tradew.com/openapis/data-ids",
             API_KEY,
             {
-                language: args.language!.trim(), // validateLanguage above rejects missing/non-string values.
+                language: args.language!.trim(),
                 type,
                 pagination: {
                     current_page: pagination.current_page,
