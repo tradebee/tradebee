@@ -1,0 +1,17 @@
+{
+  "title": "小蜜蜂数字营销连接配置",
+  "title_en": "Tradebee connection",
+  "description": "输入您自己的小蜜蜂数字营销 API Key。WorkBuddy 将凭证保存在本机，并在连接 MCP 服务时通过 HTTPS 发送。",
+  "description_en": "Enter your Tradebee API key. WorkBuddy stores it locally and sends it to the MCP service over HTTPS when connecting.",
+  "fields": [
+    {
+      "key": "BEE_API_KEY",
+      "label": "小蜜蜂数字营销 API Key",
+      "label_en": "Tradebee API Key",
+      "type": "password",
+      "required": true,
+      "description": "用于访问您自己的小蜜蜂数字营销网站数据。",
+      "description_en": "Authorizes access to your Tradebee site data."
+    }
+  ]
+}

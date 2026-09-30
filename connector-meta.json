@@ -1,0 +1,21 @@
+{
+  "name": "Tradebee",
+  "name_zh": "小蜜蜂数字营销",
+  "name_en": "Tradebee",
+  "description": "连接到小蜜蜂数字营销网站，查询、优化、装修、分析和管理内容、询盘、访客、关键词、流量、产品、新闻、FAQs、自定义页面、博客、导航、导航及页面。",
+  "description_zh": "连接到小蜜蜂数字营销网站，查询、优化、装修、分析和管理内容、询盘、访客、关键词、流量、产品、新闻、FAQs、自定义页面、博客、导航、导航及页面。",
+  "description_en": "Connect to the Tradebee digital marketing website to query, optimize, customize, analyze, and manage content, inquiries, visitors, keywords, traffic, products, news, FAQs, custom pages, blogs, navigation, and pages.",
+  "source": "tradebee",
+  "type": "mcp",
+  "version": "26.9.30",
+  "auth_mode": "token",
+  "minWorkbuddyVersion": "4.24.0",
+  "examples_zh": [
+    "查看我的 Tradebee 网站有哪些语言",
+    "列出英文网站的产品"
+  ],
+  "examples_en": [
+    "Show the languages available for my Tradebee site.",
+    "List the products on my English site"
+  ]
+}

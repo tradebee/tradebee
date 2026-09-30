@@ -1,0 +1,27 @@
+{
+  "name": "tradebee",
+  "version": "26.9.30",
+  "description": "Connect to the Tradebee digital marketing website to query, optimize, customize, analyze, and manage site content and data.",
+  "author": {
+    "name": "Tradebee"
+  },
+  "keywords": [ "tradebee" ],
+  "license": "MIT",
+  "interface": {
+    "displayName": "小蜜蜂数字营销",
+    "shortDescription": "查询、优化和管理小蜜蜂网站",
+    "longDescription": "连接到小蜜蜂数字营销网站，查询、优化、装修、分析和管理内容、询盘、访客、关键词、流量、产品、新闻、FAQs、自定义页面、博客、导航及页面。",
+    "developerName": "Tradebee",
+    "category": "Productivity",
+    "capabilities": [ "Read", "Write", "Design", "Analysis", "SEO", "GEO" ],
+    "logo": "./assets/tradebee_glyph.png",
+    "composerIcon": "./assets/tradebee_glyph.svg",
+    "brandColor": "#ff6700",
+    "websiteURL": "https://www.tradebee.cn",
+    "defaultPrompt": [
+      "查看我的 Tradebee 网站有哪些语言",
+      "列出英文网站的产品"
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

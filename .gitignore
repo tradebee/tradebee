@@ -1,7 +1,4 @@
 node_modules/
 .npm-cache/
 dist/
-release/
-reports/
-backups/
 *.log

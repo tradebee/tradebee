@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "tradebee": {
+      "type": "streamableHttp",
+      "url": "https://mcp.tradew.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${BEE_API_KEY}"
+      },
+      "timeout": 30000
+    }
+  }
+}
