@@ -1,7 +1,7 @@
 {
   "name": "tradebee",
-  "description": "v26.9.30 A unified Tradebee Website Builder Open API skill for explicit content, navigation, product, analytics, file-upload, real website link retrieval, and page generation, preview, and persistence operations. Update actions automatically read and back up the current record before mutation.",
-  "version": "26.9.30",
+  "description": "v26.10.8 A unified Tradebee Website Builder Open API skill for explicit content, navigation, product, analytics, file-upload, real website link retrieval, and page generation, preview, and persistence operations. Update actions automatically read and back up the current record before mutation.",
+  "version": "26.10.8",
   "input": {
     "type": "object",
     "properties": {
@@ -84,6 +84,16 @@
       "pageName": {
         "type": "string",
         "description": "Required by page-generation-definition, page-html, and page-save. For an existing page, use one exact pageName returned by page-list. To create a template page, use the exact available pageName returned by page-get-available-template-page-name."
+      },
+      "pageConfig": {
+        "type": "object",
+        "description": "Optional for page-save except when creating a CommPage01-CommPage99 page, where it is required. For an existing CommPage, omit it to preserve the saved names or supply both names to update them. Copy the exact cnName and enName casing from page-html data.pageConfig when editing. cnName is the Chinese page name; enName is the English page name used in its URL. Each must be nonblank and at most 50 characters. Other page types ignore this parameter.",
+        "properties": {
+          "cnName": { "type": "string", "minLength": 1, "maxLength": 50 },
+          "enName": { "type": "string", "minLength": 1, "maxLength": 50 }
+        },
+        "required": [ "cnName", "enName" ],
+        "additionalProperties": false
       },
       "guid": {
         "type": "integer",

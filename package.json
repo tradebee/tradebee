@@ -1,6 +1,6 @@
 {
   "name": "tradebee",
-  "version": "26.9.30",
+  "version": "26.10.8",
   "description": "Connect OpenClaw to the Tradebee MCP service to query, analyze, and manage website content and data.",
   "author": "Tradebee",
   "keywords": [

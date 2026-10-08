@@ -7,7 +7,7 @@
   "description_en": "Connect to the Tradebee digital marketing website to query, optimize, customize, analyze, and manage content, inquiries, visitors, keywords, traffic, products, news, FAQs, custom pages, blogs, navigation, and pages.",
   "source": "tradebee",
   "type": "mcp",
-  "version": "26.9.30",
+  "version": "26.10.8",
   "auth_mode": "token",
   "minWorkbuddyVersion": "4.24.0",
   "examples_zh": [
