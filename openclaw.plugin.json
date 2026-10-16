@@ -2,7 +2,7 @@
   "id": "tradebee",
   "name": "Tradebee AI Toolkit",
   "description": "Connect OpenClaw to Tradebee MCP using BEE_API_KEY.",
-  "version": "26.10.8",
+  "version": "26.10.16",
   "configSchema": {
     "type": "object",
     "properties": {},

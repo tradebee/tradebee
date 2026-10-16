@@ -1,13 +1,14 @@
 {
   "name": "tradebee",
-  "description": "v26.10.8 A unified Tradebee Website Builder Open API skill for explicit content, navigation, product, analytics, file-upload, real website link retrieval, and page generation, preview, and persistence operations. Update actions automatically read and back up the current record before mutation.",
-  "version": "26.10.8",
+  "description": "v26.10.16 A unified Tradebee Website Builder Open API skill for explicit content, navigation, product, analytics, file-upload, real website link retrieval, and page generation, preview, and persistence operations. Update actions automatically read and back up the current record before mutation.",
+  "version": "26.10.16",
   "input": {
     "type": "object",
     "properties": {
       "action": {
         "type": "string",
         "enum": [
+          "backup-read",
           "data-ids-list",
           "blog-create",
           "blog-delete",
@@ -51,6 +52,8 @@
           "page-html",
           "page-list",
           "page-save",
+          "page-tdk",
+          "page-tdk-update",
           "products-create",
           "products-delete",
           "products-read",
@@ -62,7 +65,11 @@
           "rule-get",
           "visitor-recent"
         ],
-        "description": "Required. Selects which Tradebee OpenAPI capability to execute. Route only after the Tradebee data domain and object type are explicit. Page workflow: page-list selects an exact existing pageName; when the user wants to create a template page, page-get-available-template-page-name returns the exact available template pageName; page-generation-definition returns its authoritative generation contract; data-ids-list supplies real existing record or group IDs required by module parameters; links-list supplies real existing website URLs when the generated page needs links; file-upload stores JPG/PNG/GIF images needed by page HTML or CSS; page-html reads or previews without saving; page-save creates or updates only after final preview and explicit confirmation. After any page content, layout, or CSS adjustment, call page-html with the latest layouts and css, render the returned pageHtml in a browser, and perform a final visual CSS review at desktop, tablet, and mobile widths. Check for layout misalignment, overlap, clipping, horizontal overflow, incorrect spacing, image display problems, unreadable text, responsive issues, and broken interaction states. If any issue is found, revise the CSS, render the latest preview, and review it again. Do not claim that the CSS review passed or call page-save until the latest candidate has passed an actual rendered-page review; static CSS inspection alone is insufficient. Existing page overwrites are backed up locally. When generating a page, consume all page-generation-definition rules, including pageLayoutRules.entranceAnimationRules and pageCssRules. A page-load, viewport-entry, or carousel-activation entrance effect must select an exact animations key through HTML data-animated instead of inventing another entrance implementation. CSS animation capabilities remain available for hover, focus, active, system-state, and non-entrance decorative effects. Other domains use their matching read, create, update, or delete actions. For rule-based HTML fragments, rule-get provides scene constraints; when links are needed, links-list provides real URLs under the same language instead of legacy link_resources. IDs used in generated module parameters must be copied from data-ids-list data.list[].id and never inferred. Every URL used from links-list must be a relative path without a protocol, hostname, domain, or //host prefix. Never prepend data.host or the website domain."
+        "description": "Required. Selects which Tradebee OpenAPI capability to execute. Route only after the Tradebee data domain and object type are explicit. backup-read retrieves one server-side backup by its exact backup.storage.file_name returned by an earlier mutation. Retain that filename in client memory; no backup listing is provided. Read data.snapshot, data.restore_action, data.restore_payload, and data.restore_limitations, show the proposed restoration to the user, then call the existing restore_action with the restore_payload and explicit confirmation. backup-read itself never restores or modifies data. Backup files may be periodically deleted; if backup-read returns status=false because the file no longer exists, report that the backup is unavailable and do not attempt restoration from that file. Page workflow: page-list selects an exact existing pageName; when the user wants to create a template page, page-get-available-template-page-name returns the exact available template pageName; page-generation-definition returns its authoritative generation contract; data-ids-list supplies real existing record or group IDs required by module parameters; links-list supplies real existing website URLs when the generated page needs links; file-upload stores JPG/PNG/GIF images needed by page HTML or CSS; page-tdk reads effective page Title, Description, and Keywords in data.seo; page-tdk-update replaces all three page SEO overrides after explicit confirmation and local backup. These actions use language and pageName without guid; content-specific pages must use their matching content APIs. Empty SEO strings remove page overrides and fall back to template behavior. Backups contain effective values, so restoring cannot recover original template variables or inheritance. page-html reads or previews without saving; page-save creates or updates only after final preview and explicit confirmation. After any page content, layout, or CSS adjustment, call page-html with the latest layouts and css, render the returned pageHtml in a browser, and perform a final visual CSS review at desktop, tablet, and mobile widths. Check for layout misalignment, overlap, clipping, horizontal overflow, incorrect spacing, image display problems, unreadable text, responsive issues, and broken interaction states. If any issue is found, revise the CSS, render the latest preview, and review it again. Do not claim that the CSS review passed or call page-save until the latest candidate has passed an actual rendered-page review; static CSS inspection alone is insufficient. Existing page overwrites are backed up locally. When generating a page, consume all page-generation-definition rules, including pageLayoutRules.entranceAnimationRules and pageCssRules. A page-load, viewport-entry, or carousel-activation entrance effect must select an exact animations key through HTML data-animated instead of inventing another entrance implementation. CSS animation capabilities remain available for hover, focus, active, system-state, and non-entrance decorative effects. Other domains use their matching read, create, update, or delete actions. For rule-based HTML fragments, rule-get provides scene constraints; when links are needed, links-list provides real URLs under the same language instead of legacy link_resources. IDs used in generated module parameters must be copied from data-ids-list data.list[].id and never inferred. Every URL used from links-list must be a relative path without a protocol, hostname, domain, or //host prefix. Never prepend data.host or the website domain."
+      },
+      "backup_file_name": {
+        "type": "string",
+        "description": "Required by backup-read. Copy the complete backup.storage.file_name returned by the original mutation, including its GUID and .json extension. Supply only the filename, never file_path, a directory, a URL, or a guessed name. No language or confirmation is required for backup-read."
       },
       "uploads": {
         "type": "array",
@@ -83,7 +90,18 @@
       },
       "pageName": {
         "type": "string",
-        "description": "Required by page-generation-definition, page-html, and page-save. For an existing page, use one exact pageName returned by page-list. To create a template page, use the exact available pageName returned by page-get-available-template-page-name."
+        "description": "Required by page-generation-definition, page-html, page-save, page-tdk, and page-tdk-update. For an existing page, use one exact pageName returned by page-list. To create a template page, use the exact available pageName returned by page-get-available-template-page-name."
+      },
+      "seo": {
+        "type": "object",
+        "description": "Required by page-tdk-update. Supply all three fields together; the API does not preserve omitted fields. Empty strings remove the page override and fall back to template behavior. page-tdk returns effective values rather than raw overrides, so copying them back writes explicit values. Use the matching content editing API for ProductDesign, VpProductsList, SearchProductsList, NewsDetail, BlogDetail, FaqsDetail, ProductsDesc, OtherBar, CaseDesc, ExhibitionDesc, and CertificateDesc.",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "keywords": { "type": "string" }
+        },
+        "required": [ "title", "description", "keywords" ],
+        "additionalProperties": false
       },
       "pageConfig": {
         "type": "object",
@@ -913,19 +931,19 @@
         "description": "Response message"
       },
       "data": {
-        "type": [
-          "object",
-          "array",
-          "string",
-          "number",
-          "boolean",
-          "null"
+        "anyOf": [
+          { "type": "object" },
+          { "type": "array" },
+          { "type": "string" },
+          { "type": "number" },
+          { "type": "boolean" },
+          { "type": "null" }
         ],
-        "description": "Returned result from the selected action. For file-upload, inspect both data.success[] and data.fail[] because one request may contain per-file successes and failures. Each success item contains name, url, and fileState; fileState has the exact fields Suffix, Type, Guid, Width, Height, and ContentLength. Use url for HTML/CSS and pass fileState through unchanged only when a downstream schema requires file metadata."
+        "description": "Returned result from the selected action. For backup-read, data contains backup_file_name, backup_id, saved_at, action, language, entity_id, snapshot_source, snapshot, raw_read_response, requested_update_payload, restore_action, restore_payload, and restore_limitations. Reading a backup does not execute restoration. For file-upload, inspect both data.success[] and data.fail[] because one request may contain per-file successes and failures. Each success item contains name, url, and fileState; fileState has the exact fields Suffix, Type, Guid, Width, Height, and ContentLength. Use url for HTML/CSS and pass fileState through unchanged only when a downstream schema requires file metadata."
       },
       "backup": {
         "type": "object",
-        "description": "Returned by update actions and by page-save when an existing member page is overwritten. It includes local backup storage metadata, the pre-change API response and snapshot, a restore payload, and any restore limitations. Read backup.captured to determine whether a backup was captured. The local backup file path is backup.storage.file_path; do not use backup.storage.path or backup.storage.file. Backups are captured before submitting the update, so a backup may exist even when the update fails. Determine update success from the top-level status, not from backup presence or backup.captured, and report the update result and backup file path separately."
+        "description": "Returned by update actions and by page-save when an existing member page is overwritten. It includes local backup storage metadata, the pre-change API response and snapshot, a restore payload, and any restore limitations. Read backup.captured to determine whether a backup was captured. Keep backup.storage.file_name in client memory and pass it as backup_file_name to backup-read to retrieve the snapshot and restoration parameters later. The local backup file path is backup.storage.file_path; do not use backup.storage.path or backup.storage.file. Backups are captured before submitting the update, so a backup may exist even when the update fails. Determine update success from the top-level status, not from backup presence or backup.captured, and report the update result and backup file path separately."
       }
     },
     "required": [

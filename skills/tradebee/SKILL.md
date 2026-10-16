@@ -5,7 +5,7 @@ display_name_en: Tradebee
 description: Use Tradebee to query, optimize, customize, analyze, or manage a connected Tradebee digital marketing website.
 description_zh: 查询、优化、装修、分析和管理小蜜蜂数字营销网站的内容、数据与页面。
 description_en: Query, optimize, customize, analyze, and manage content, data, and pages on a connected Tradebee website.
-version: 26.10.8
+version: 26.10.16
 author: Tradebee
 ---
 
