@@ -1,0 +1,7 @@
+{
+  "name": "tradebee",
+  "version": "26.11.18",
+  "url": "https://mcp.tradew.com/mcp",
+  "tokenEnvVar": "BEE_API_KEY",
+  "timeout": 30000
+}

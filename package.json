@@ -3,21 +3,43 @@
   "version": "26.11.18",
   "description": "Query, analyze, and manage Tradebee website content, pages, SEO, inquiries, and visitor data.",
   "license": "MIT",
+  "homepage": "https://www.tradebee.cn",
+  "author": {
+    "name": "Tradebee"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24.16"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.8.2"
+  },
   "openclaw": {
+    "extensions": [
+      "./index.mjs"
+    ],
     "compat": {
-      "pluginApi": ">=2026.8.2"
+      "pluginApi": ">=2026.8.2",
+      "minGatewayVersion": "2026.8.2"
     },
     "build": {
-      "openclawVersion": "2026.8.2"
+      "openclawVersion": "2026.8.2",
+      "pluginSdkVersion": "2026.8.2"
     }
   },
   "files": [
     "openclaw.plugin.json",
-    ".codex-plugin",
-    ".mcp.json",
+    "index.mjs",
+    "runtime.mjs",
+    "connection.json",
+    "tools.json",
     "assets",
     "skills",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "INSTALL.md"
   ]
 }
