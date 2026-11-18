@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "${name}": {
-      "type": "http",
-      "url": "${mcp.url}",
-      "bearer_token_env_var": "${mcp.tokenEnvVar}"
-    }
-  }
-}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "tradebee": {
+      "transport": "streamable-http",
+      "url": "https://mcp.tradew.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${BEE_API_KEY}"
+      }
+    }
+  }
+}

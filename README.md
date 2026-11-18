@@ -1,12 +1,12 @@
 ---
-name: ${name}
-description: ${description}
-version: ${version}
+name: tradebee
+description: Query, analyze, and manage Tradebee website content, pages, SEO, inquiries, and visitor data.
+version: 26.11.18
 ---
 
-# ${brand.name} for ${agent.name}
+# Tradebee for OpenClaw
 
-Use ${agent.name}'s connected ${brand.name} MCP tools directly. For example, call `${agent.toolPrefix}languages-get` with `{}`. Follow the tool names and schemas exposed by the client.
+Use OpenClaw's connected Tradebee MCP tools directly. For example, call `tradebee__languages-get` with `{}`. Follow the tool names and schemas exposed by the client.
 
 ## Features
 

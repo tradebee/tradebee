@@ -1,0 +1,11 @@
+{
+  "id": "tradebee",
+  "name": "tradebee",
+  "version": "26.11.18",
+  "description": "Query, analyze, and manage Tradebee website content, pages, SEO, inquiries, and visitor data.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

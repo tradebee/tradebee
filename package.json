@@ -2,16 +2,14 @@
   "name": "tradebee",
   "version": "26.11.18",
   "description": "Query, analyze, and manage Tradebee website content, pages, SEO, inquiries, and visitor data.",
-  "private": true,
   "license": "MIT",
-  "scripts": {
-    "build": "npm run package",
-    "package": "node scripts/package.mjs",
-    "check": "node --input-type=module -e \"import { validateConfig } from './scripts/config.mjs'; validateConfig(); console.log('Client configuration is consistent');\"",
-    "test": "node --test testing/*.test.mjs",
-    "test:connection": "node testing/list-actions.mjs"
-  },
-  "devDependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0"
-  }
+  "files": [
+    "openclaw.plugin.json",
+    ".codex-plugin",
+    ".mcp.json",
+    "assets",
+    "skills",
+    "LICENSE",
+    "README.md"
+  ]
 }
