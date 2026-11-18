@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "${name}": {
+      "transport": "streamable-http",
+      "url": "${mcp.url}",
+      "headers": {
+        "Authorization": "${mcp.authorization}"
+      }
+    }
+  }
+}

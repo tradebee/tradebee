@@ -1,0 +1,15 @@
+{
+  "name": "${name}",
+  "name_zh": "${brand.nameZh}",
+  "name_en": "${brand.name}",
+  "description": "${description}",
+  "description_zh": "${brand.descriptionZh}",
+  "description_en": "${description}",
+  "source": "${name}",
+  "type": "mcp",
+  "version": "${version}",
+  "auth_mode": "token",
+  "minWorkbuddyVersion": "4.24.0",
+  "examples_zh": "${examples.zh}",
+  "examples_en": "${examples.en}"
+}

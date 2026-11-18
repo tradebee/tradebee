@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "${name}": {
+      "type": "streamableHttp",
+      "url": "${mcp.url}",
+      "headers": {
+        "Authorization": "${mcp.authorization}"
+      },
+      "timeout": "${mcp.timeout}"
+    }
+  }
+}

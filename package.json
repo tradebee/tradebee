@@ -1,66 +1,17 @@
 {
   "name": "tradebee",
-  "version": "26.10.16",
-  "description": "Connect OpenClaw to the Tradebee MCP service to query, analyze, and manage website content and data.",
-  "author": "Tradebee",
-  "keywords": [
-    "tradebee",
-    "openclaw",
-    "mcp",
-    "website"
-  ],
+  "version": "26.11.18",
+  "description": "Query, analyze, and manage Tradebee website content, pages, SEO, inquiries, and visitor data.",
+  "private": true,
   "license": "MIT",
-  "type": "module",
-  "main": "dist/index.js",
-  "files": [
-    ".codex-plugin",
-    "assets",
-    "dist",
-    ".mcp.json",
-    "LICENSE",
-    "openclaw.plugin.json",
-    "README.md",
-    "tool.schema.json",
-    "skills",
-    "connector-meta.json",
-    "icon.svg",
-    "mcp.json",
-    "token-schema.json"
-  ],
-  "engines": {
-    "node": ">=24.16"
-  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0",
-    "typebox": "^1.1.38"
+    "build": "npm run package",
+    "package": "node scripts/package.mjs",
+    "check": "node --input-type=module -e \"import { validateConfig } from './scripts/config.mjs'; validateConfig(); console.log('Client configuration is consistent');\"",
+    "test": "node --test testing/*.test.mjs",
+    "test:connection": "node testing/list-actions.mjs"
   },
   "devDependencies": {
-    "@types/node": "^24.19.0",
-    "openclaw": "2026.8.2",
-    "typescript": "^5.9.0"
-  },
-  "peerDependencies": {
-    "openclaw": ">=2026.5.17"
-  },
-  "openclaw": {
-    "extensions": [
-      "./dist/index.js"
-    ],
-    "install": {
-      "clawhubSpec": "clawhub:tradebee",
-      "minHostVersion": ">=2026.5.17"
-    },
-    "compat": {
-      "pluginApi": ">=2026.5.17",
-      "minGatewayVersion": "2026.5.17"
-    },
-    "build": {
-      "openclawVersion": "2026.8.2",
-      "pluginSdkVersion": "2026.8.2"
-    }
+    "@modelcontextprotocol/sdk": "1.30.0"
   }
 }
