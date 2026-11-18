@@ -3,6 +3,14 @@
   "version": "26.11.18",
   "description": "Query, analyze, and manage Tradebee website content, pages, SEO, inquiries, and visitor data.",
   "license": "MIT",
+  "openclaw": {
+    "compat": {
+      "pluginApi": ">=2026.8.2"
+    },
+    "build": {
+      "openclawVersion": "2026.8.2"
+    }
+  },
   "files": [
     "openclaw.plugin.json",
     ".codex-plugin",
